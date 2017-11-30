@@ -50,23 +50,48 @@ function computerTellsStory(storyTree, prompt=true) {
     return;
   }
 
-  const createStoryDiv = function () {
+  const insertAfter = function (el, referenceNode) {
+    referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
+  }
+
+  const createStoryDiv = function (script, callback) {
+    console.log(script, 'beginning of createstorydiv')
     var container = document.createElement('div');
     var span = document.createElement('span');
-    container.appendChild(span);
-    console.log(span);
-    document.getElementsByClassName('command-prompt-window')[0].appendChild(container);
-    span.innerHTML = storyTree.script ? storyTree.script : defaultComputerResponse;
     addClass(container, 'typewriter-container');
     addClass(span, 'typewriter');
+    container.appendChild(span);
+
+    const typewriterContainers = document.getElementsByClassName('typewriter-container');
+    if (typewriterContainers.length) {
+      insertAfter(container, typewriterContainers[typewriterContainers.length - 1]);
+    } else {
+      document.getElementsByClassName('command-prompt-window')[0].appendChild(container);
+    }
+
+    if (script.length > 50) {
+      console.log(script, 'script greater than 50');
+      span.innerHTML = script.slice(0, script.indexOf(' ', 50));
+
+      setTimeout(function() {
+        createStoryDiv(script.slice(script.indexOf(' ', 50)), callback);
+      }, 1100);
+    } else {
+      if (typewriterContainers.length) {
+        addClass(span, 'last-line');
+      }
+      console.log(script, 'tell me the script');
+      span.innerHTML = script ? script : defaultComputerResponse;
+      callback();
+    }
   }
 
-  createStoryDiv();
-
-  if (prompt) {
-    currentStorySection = storyTree;
-    promptUser();
-  }
+  createStoryDiv(storyTree.script, function prompt() {
+    if (prompt) {
+      currentStorySection = storyTree;
+      promptUser();
+    }
+  });
 }
 
 function promptUser() {
