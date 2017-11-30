@@ -45,23 +45,27 @@ var addClass = function (el, className) {
 };
 
 function computerTellsStory(storyTree, prompt=true) {
-  if (prompt) {
-    currentStorySection = storyTree;
-  }
-  var container = document.createElement('div');
-  var span = document.createElement('span');
-  container.appendChild(span);
-  console.log(span);
-  document.getElementsByClassName('command-prompt-window')[0].appendChild(container);
-  span.innerHTML = storyTree.script ? storyTree.script : defaultComputerResponse;
-  addClass(container, 'typewriter-container');
-  addClass(span, 'typewriter');
-
-  if (prompt && !storyTree.fail) {
-    promptUser();
-  }
   if (storyTree.fail) {
     printGameOver();
+    return;
+  }
+
+  const createStoryDiv = function () {
+    var container = document.createElement('div');
+    var span = document.createElement('span');
+    container.appendChild(span);
+    console.log(span);
+    document.getElementsByClassName('command-prompt-window')[0].appendChild(container);
+    span.innerHTML = storyTree.script ? storyTree.script : defaultComputerResponse;
+    addClass(container, 'typewriter-container');
+    addClass(span, 'typewriter');
+  }
+
+  createStoryDiv();
+
+  if (prompt) {
+    currentStorySection = storyTree;
+    promptUser();
   }
 }
 
