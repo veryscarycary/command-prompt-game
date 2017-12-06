@@ -11,7 +11,7 @@ function StoryTree(script, aftermath, fail = false) {
 var story =
   new StoryTree('Wake up, Neo... Are you awake?', {
     yes: new StoryTree('Good. I have a very important task for you. Are you in?', {
-      yes: new StoryTree('I need you to go outside and steal a car. Still with me?(Go outside?)', {
+      yes: new StoryTree('I need you to go outside and steal a car. Still with me? (Go outside?)', {
         yes: new StoryTree("You see a red mustang parked across the street from a liquor store. There are two men standing beside it smoking cigarettes. What do you do? (distract them) or (face them head on)?", {
           'distract them': new StoryTree("You throw a rock to the right of them. They get flustered and move over to the side of the liquor store to check it out. What now?(take the car) or (assasinate the men)"),
           'face them head on': new StoryTree("You run up to the two men, punch the one closest to the driver's seat, and proceed to open the driver's door. The second man takes out a pistol and shoots you in the throat. You bleed out in 20 seconds. :(",false, true)
@@ -55,7 +55,7 @@ function computerTellsStory(storyTree, prompt=true) {
   }
 
   const createStoryDiv = function (script, callback) {
-    console.log(script, 'beginning of createstorydiv')
+    console.log(script,script.length, 'beginning of createstorydiv')
     var container = document.createElement('div');
     var span = document.createElement('span');
     addClass(container, 'typewriter-container');
@@ -64,25 +64,40 @@ function computerTellsStory(storyTree, prompt=true) {
 
     const typewriterContainers = document.getElementsByClassName('typewriter-container');
     if (typewriterContainers.length) {
-      insertAfter(container, typewriterContainers[typewriterContainers.length - 1]);
+      const breakElement = document.createElement('br');
+      insertAfter(breakElement, typewriterContainers[typewriterContainers.length - 1]);
+      insertAfter(container, breakElement);
     } else {
       document.getElementsByClassName('command-prompt-window')[0].appendChild(container);
     }
 
-    if (script.length > 50) {
-      console.log(script, 'script greater than 50');
-      span.innerHTML = script.slice(0, script.indexOf(' ', 50));
+    //43 pixels is roughly 1 character
+    const widthOfViewport = window.innerWidth/43;
+    const indexOfSpaceBreak = script.indexOf(' ', widthOfViewport);
+    console.log(window.innerWidth/43, 'width of viewport in cahracters');
+
+    // if script is longer than the length of the screen and includes a space to break
+    if (script.length > widthOfViewport && indexOfSpaceBreak !== -1) {
+      span.innerHTML = script.slice(0, indexOfSpaceBreak);
 
       setTimeout(function() {
-        createStoryDiv(script.slice(script.indexOf(' ', 50)), callback);
+        createStoryDiv(script.slice(indexOfSpaceBreak), callback);
       }, 1100);
     } else {
-      if (typewriterContainers.length) {
-        addClass(span, 'last-line');
-      }
-      console.log(script, 'tell me the script');
+        // addClass(span, 'last-line');
       span.innerHTML = script ? script : defaultComputerResponse;
+
+      // place input field for user
       callback();
+
+      // allows the text to wrap when the screen size adjusts
+      // waits for previous text to post
+      setTimeout(function() {
+        const elements = document.getElementsByClassName('typewriter');
+        Array.prototype.forEach.call(elements, function(element) {
+          element.style.whiteSpace = 'normal';
+        });
+      }, 1200);
     }
   }
 
@@ -169,6 +184,20 @@ function storyFinished() {
   return storyFinished;
 }
 
+const resetGameWithEnter = function(event) {
+  event = event || window.event;
+  console.log(event.keyCode, 'pressing enter');
+  if (event.keyCode === 13) {
+    resetGame();
+  }
+};
+
+function resetGame() {
+  clearCommandPrompt();
+  computerTellsStory(story);
+  document.removeEventListener('keyup', resetGameWithEnter);
+}
+
 function printGameOver() {
   gameOver = true;
   console.log('game over');
@@ -181,10 +210,15 @@ function printGameOver() {
   addClass(container, 'game-over-container');
   addClass(span, 'game-over-text');
 
-  container.onclick = function() {
-    clearCommandPrompt();
-    computerTellsStory(story);
+  container.onclick = function(event) {
+    event.stopPropagation();
+    resetGame();
   };
+
+  // after a tiny bit of time, allow user to reset game with enter
+  setTimeout(function() {
+    document.addEventListener('keyup', resetGameWithEnter);
+  }, 200);
 }
 
 
