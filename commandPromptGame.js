@@ -8,12 +8,39 @@ function StoryTree(script, aftermath, fail = false) {
   }
 }
 
+const west = new StoryTree("A barren desert unfolds before you. It's hot and dry. Your engine starts acting up and soon enough, you find yourself on the side of the road with steam billowing out from under your hood.", {
+
+});
+const east = new StoryTree("You encounter a group of traffic signs that indicate your heading into dense civilization. You can go to the (big city) or the (small town).", {
+  'big city': new StoryTree(""),
+  'small town': new StoryTree("")
+});
+
+const stealCarSafe = new StoryTree("You hop in the car, quickly hotwire it, and are well on your way. On your way down the road, you hit a fork. Go (west) or (east)?", {
+  'west': west,
+  'east': east
+})
+
 var story =
   new StoryTree('Wake up, Neo... Are you awake?', {
     yes: new StoryTree('Good. I have a very important task for you. Are you in?', {
       yes: new StoryTree('I need you to go outside and steal a car. Still with me? (Go outside?)', {
-        yes: new StoryTree("You see a red mustang parked across the street from a liquor store. There are two men standing beside it smoking cigarettes. What do you do? (distract them) or (face them head on)?", {
-          'distract them': new StoryTree("You throw a rock to the right of them. They get flustered and move over to the side of the liquor store to check it out. What now?(take the car) or (assasinate the men)"),
+        'go outside': new StoryTree("You see a red mustang parked across the street from a liquor store. There are two men standing beside it smoking cigarettes. What do you do? (distract them) or (face them head on)?", {
+          'distract them': new StoryTree("You throw a rock to the right of them. They get flustered and move over to the side of the liquor store to check it out. What now?(take the car) or (assassinate the men)", {
+            'take the car': new StoryTree("You run to the car as fast as you can and jump into the driver seat. You lock the door quickly. The men run at you and bash on the side of your car as you start the engine and speed down the street. Where do you go from here? (down the road) or (go back)", {
+              'down the road': new StoryTree("You see a fork in the road. Go (west) or (east)?", {
+                'west': west,
+                'east': east
+              }),
+              'go back': new StoryTree("The men immediately see you coming down the road and unload on your front windshield with a tommy gun. You never even make it within 50 yards of them.", false, true)
+            }),
+            'assassinate the men': new StoryTree("You see a coil of wires lying near the road. When the men aren't looking, you swiftly wrap each of their heads in wires and pull as hard as you can. The men drop to the ground lifeless. What now? (loot their bodies) or (steal the car)", {
+              'loot their bodies': new StoryTree("You find a handgun and 5 bullets. What now? (steal the car)", {
+                'steal the car': stealCarSafe
+              }),
+              'steal the car': stealCarSafe
+            })
+          }),
           'face them head on': new StoryTree("You run up to the two men, punch the one closest to the driver's seat, and proceed to open the driver's door. The second man takes out a pistol and shoots you in the throat. You bleed out in 20 seconds. :(",false, true)
         }),
         no: new StoryTree("What a wuss. Cars aren't even hard to steal.", false, true)
