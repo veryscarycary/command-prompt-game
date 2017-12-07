@@ -47,11 +47,11 @@ html, body {
   /* Keeps the content on a single line */
   letter-spacing: .15em;
   /* Adjust as needed */
-  animation: typing 1.1s steps(26, end), blink-caret 0.25s step-end 4;
+  animation: typing 0.9s steps(26, end), blink-caret 0.25s step-end 4;
 }
 
 .typewriter-container .typewriter.last-line {
-  animation: typing 1.1s steps(26, end), blink-caret 0.75s step-end 4;
+  animation: typing 0.9s steps(26, end), blink-caret 0.75s step-end 4;
 }
 
 .game-over-container {

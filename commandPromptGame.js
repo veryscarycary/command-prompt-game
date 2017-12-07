@@ -44,7 +44,14 @@ var addClass = function (el, className) {
   }
 };
 
-function computerTellsStory(storyTree, prompt=true) {
+function computerTellsStory(storyTree, prompt=true, callback) {
+  if (prompt) {
+    callback = function prompt() {
+        currentStorySection = storyTree;
+        promptUser();
+    }
+  }
+
   if (storyTree.fail) {
     printGameOver();
     return;
@@ -55,6 +62,8 @@ function computerTellsStory(storyTree, prompt=true) {
   }
 
   const createStoryDiv = function (script, callback) {
+    const typewritingSpeed = 900;
+
     console.log(script,script.length, 'beginning of createstorydiv')
     var container = document.createElement('div');
     var span = document.createElement('span');
@@ -82,13 +91,11 @@ function computerTellsStory(storyTree, prompt=true) {
 
       setTimeout(function() {
         createStoryDiv(script.slice(indexOfSpaceBreak), callback);
-      }, 1100);
+      }, typewritingSpeed);
     } else {
         // addClass(span, 'last-line');
-      span.innerHTML = script ? script : defaultComputerResponse;
+      span.innerHTML = script;
 
-      // place input field for user
-      callback();
 
       // allows the text to wrap when the screen size adjusts
       // waits for previous text to post
@@ -97,16 +104,13 @@ function computerTellsStory(storyTree, prompt=true) {
         Array.prototype.forEach.call(elements, function(element) {
           element.style.whiteSpace = 'normal';
         });
-      }, 1200);
+        // place input field for user
+        callback();
+      }, typewritingSpeed + 200);
     }
   }
 
-  createStoryDiv(storyTree.script, function prompt() {
-    if (prompt) {
-      currentStorySection = storyTree;
-      promptUser();
-    }
-  });
+  createStoryDiv(storyTree.script, callback);
 }
 
 function promptUser() {
@@ -154,11 +158,14 @@ function checkUserResponse() {
 }
 
 function printDefaultResponse() {
-  computerTellsStory(new StoryTree(defaultComputerResponse), false);
-  setTimeout(function() {
+  computerTellsStory(new StoryTree(defaultComputerResponse), false, function() {
     clearCommandPrompt();
     computerTellsStory(currentStorySection);
-  }, 2000);
+  });
+  // setTimeout(function() {
+  //   clearCommandPrompt();
+  //   computerTellsStory(currentStorySection);
+  // }, 3000);
 }
 
 function clearCommandPrompt() {
