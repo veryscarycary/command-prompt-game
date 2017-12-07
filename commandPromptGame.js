@@ -72,6 +72,12 @@ var addClass = function (el, className) {
 };
 
 function computerTellsStory(storyTree, prompt=true, callback) {
+  if (storyTree.fail) {
+    createStoryDiv(storyTree.script);
+    printGameOver();
+    return;
+  }
+
   if (prompt) {
     callback = function prompt() {
         currentStorySection = storyTree;
@@ -79,16 +85,11 @@ function computerTellsStory(storyTree, prompt=true, callback) {
     }
   }
 
-  if (storyTree.fail) {
-    printGameOver();
-    return;
-  }
-
-  const insertAfter = function (el, referenceNode) {
+  function insertAfter (el, referenceNode) {
     referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
   }
 
-  const createStoryDiv = function (script, callback) {
+  function createStoryDiv (script, callback) {
     const typewritingSpeed = 900;
 
     console.log(script,script.length, 'beginning of createstorydiv')
@@ -132,9 +133,12 @@ function computerTellsStory(storyTree, prompt=true, callback) {
           element.style.whiteSpace = 'normal';
         });
         // place input field for user
-        callback();
+        if (callback) {
+          callback();
+        }
       }, typewritingSpeed + 200);
     }
+
   }
 
   createStoryDiv(storyTree.script, callback);
@@ -170,7 +174,7 @@ function saveUserResponse(userResponse) {
 
 function checkUserResponse() {
   var userResponse = currentStorySection.response.toLowerCase();
-  // if correct response
+  // if matching response
   if(currentStorySection.aftermath && currentStorySection.aftermath.hasOwnProperty(userResponse)) {
     console.log('match!!!');
     console.log(userResponse);
@@ -178,7 +182,7 @@ function checkUserResponse() {
     clearCommandPrompt();
     computerTellsStory(currentStorySection);
     console.log('nextStory =>'+ JSON.stringify(currentStorySection));
-  } else {
+  } else { // nonmatching response
     clearCommandPrompt();
     printDefaultResponse();
   }
