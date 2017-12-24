@@ -23,9 +23,9 @@ const stealCarSafe = new StoryTree("You hop in the car, quickly hotwire it, and 
 
 var story =
   new StoryTree('Wake up, Neo... Are you awake?', {
-    yes: new StoryTree('Good. I have a very important task for you. Are you in?', {
-      yes: new StoryTree('I need you to go outside and steal a car. Still with me? (Go outside?)', {
-        'go outside': new StoryTree("You see a red mustang parked across the street from a liquor store. There are two men standing beside it smoking cigarettes. What do you do? (distract them) or (face them head on)?", {
+    'yes, ya, yeah, yeah': new StoryTree('Good. I have a very important task for you. Are you in?', {
+      'yes, ya, yeah, yeah': new StoryTree('I need you to go outside and steal a car. Still with me? (Go outside?)', {
+        'yes, ya, yeah, yeah, go outside': new StoryTree("You see a red mustang parked across the street from a liquor store. There are two men standing beside it smoking cigarettes. What do you do? (distract them) or (face them head on)?", {
           'distract them': new StoryTree("You throw a rock to the right of them. They get flustered and move over to the side of the liquor store to check it out. What now?(take the car) or (assassinate the men)", {
             'take the car': new StoryTree("You run to the car as fast as you can and jump into the driver seat. You lock the door quickly. The men run at you and bash on the side of your car as you start the engine and speed down the street. Where do you go from here? (down the road) or (go back)", {
               'down the road': new StoryTree("You see a fork in the road. Go (west) or (east)?", {
@@ -43,11 +43,11 @@ var story =
           }),
           'face them head on': new StoryTree("You run up to the two men, punch the one closest to the driver's seat, and proceed to open the driver's door. The second man takes out a pistol and shoots you in the throat. You bleed out in 20 seconds. :(",false, true)
         }),
-        no: new StoryTree("What a wuss. Cars aren't even hard to steal.", false, true)
+        'no, nah, nope': new StoryTree("What a wuss. Cars aren't even hard to steal.", false, true)
       }),
-      no: new StoryTree('Well, why even bother. Go back to sleep.', false, true)
+      'no, nah, nope': new StoryTree('Well, why even bother. Go back to sleep.', false, true)
     }),
-    no: new StoryTree('Well, why even bother? Go back to sleep.', false, true)
+    'no, nah, nope': new StoryTree('Well, why even bother? Go back to sleep.', false, true)
   });
 
 
@@ -174,11 +174,30 @@ function saveUserResponse(userResponse) {
 
 function checkUserResponse() {
   var userResponse = currentStorySection.response.toLowerCase();
+  var keySelected;
+
+  var checkStoryKeys = function() {
+    var isValidUserResponseFound = false;
+
+    Object.keys(currentStorySection.aftermath).forEach(function(key) {
+      var result = _.some(key.split(', '), function(response) {
+        return response === userResponse;
+      });
+
+      if (result) {
+        isValidUserResponseFound = true;
+        keySelected = key;
+      }
+    });
+
+    return isValidUserResponseFound;
+  };
+
   // if matching response
-  if(currentStorySection.aftermath && currentStorySection.aftermath.hasOwnProperty(userResponse)) {
+  if(currentStorySection.aftermath && checkStoryKeys()) {
     console.log('match!!!');
     console.log(userResponse);
-    currentStorySection = currentStorySection.aftermath[userResponse];
+    currentStorySection = currentStorySection.aftermath[keySelected];
     clearCommandPrompt();
     computerTellsStory(currentStorySection);
     console.log('nextStory =>'+ JSON.stringify(currentStorySection));

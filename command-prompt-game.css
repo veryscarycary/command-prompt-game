@@ -3,17 +3,16 @@ html, body {
   width: 100%;
   margin: 0;
   box-sizing: border-box;
-}
+  background-color: black; }
 
 .command-prompt-window {
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Press Start 2P', Arial;
   font-size: 1.2em;
   width: auto;
   height: 100%;
   background-color: black;
   position: relative;
-  padding: 20px;
-}
+  padding: 20px; }
 
 .user-input {
   position: relative;
@@ -24,35 +23,27 @@ html, body {
   padding: 0;
   border: 0;
   background-color: transparent;
-  color: white;
-}
-
-.user-input:focus {
-  outline: none;
-}
+  color: white; }
+  .user-input:focus {
+    outline: none; }
 
 .typewriter-container {
   display: inline-block;
-  padding: 5px 0;
-}
-
-.typewriter-container .typewriter {
-  display: inline-block;
-  color: white;
-  overflow: hidden;
-  /* Ensures the content is not revealed until the animation */
-  border-right: .15em solid transparent;
-  /* The typwriter cursor */
-  white-space: nowrap;
-  /* Keeps the content on a single line */
-  letter-spacing: .15em;
-  /* Adjust as needed */
-  animation: typing 0.9s steps(26, end), blink-caret 0.25s step-end 4;
-}
-
-.typewriter-container .typewriter.last-line {
-  animation: typing 0.9s steps(26, end), blink-caret 0.75s step-end 4;
-}
+  padding: 5px 0; }
+  .typewriter-container .typewriter {
+    display: inline-block;
+    color: white;
+    overflow: hidden;
+    /* Ensures the content is not revealed until the animation */
+    border-right: .15em solid transparent;
+    /* The typwriter cursor */
+    white-space: nowrap;
+    /* Keeps the content on a single line */
+    letter-spacing: .15em;
+    /* Adjust as needed */
+    animation: typing 0.9s steps(26, end), blink-caret 0.25s step-end 4; }
+    .typewriter-container .typewriter.last-line {
+      animation: typing 0.9s steps(26, end), blink-caret 0.75s step-end 4; }
 
 .game-over-container {
   height: 100%;
@@ -60,30 +51,22 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
-}
-
-.game-over-container .game-over-text {
-  font-size: 100px;
-  color: white;
-}
+  text-align: center; }
+  .game-over-container .game-over-text {
+    font-size: 100px;
+    color: white; }
 
 /* The typing effect */
 @keyframes typing {
   from {
-    width: 0;
-  }
+    width: 0; }
   to {
-    width: 100%;
-  }
-}
-
+    width: 100%; } }
 /* The typewriter cursor effect */
 @keyframes blink-caret {
   from, to {
-    border-right-color: transparent;
-  }
+    border-right-color: transparent; }
   50% {
-    border-right-color: white;
-  }
-}
+    border-right-color: white; } }
+
+/*# sourceMappingURL=command-prompt-game.css.map */
